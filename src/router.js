@@ -1,25 +1,63 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+import Home from "./components/Home";
+//tournaments
+import CreateTournament from "./components/Tournaments/CreateTournament";
+import Tournaments from "./components/Tournaments/Tournaments";
+import Tournament from "./components/Tournaments/Tournament";
+//User
+import Profile from "./components/User/Profile";
+import Signin from "./components/User/Signin";
+import Signup from "./components/User/Signup";
+
+//aut
+import AuthGuard from "./auth-guard";
+
+Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: "/",
+      name: "home",
       component: Home
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      path: "/tournaments",
+      name: "Tournaments",
+      component: Tournaments,
+      beforeEnter: AuthGuard
+    },
+    {
+      path: "/tournament/new",
+      name: "CreateTournament",
+      component: CreateTournament
+    },
+    {
+      path: "/tournaments/:id",
+      name: "Tournament",
+      props: true,
+      component: Tournament,
+      beforeEnter: AuthGuard
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: Profile,
+      beforeEnter: AuthGuard
+    },
+    {
+      path: "/signup",
+      name: "Signup",
+      component: Signup
+    },
+    {
+      path: "/signin",
+      name: "Signin",
+      component: Signin
     }
   ]
-})
+});
