@@ -117,8 +117,10 @@ export default {
       this.$store.dispatch("signUserUp", {
         email: this.email,
         password: this.password,
-        admin: this.admin
+        gamertag: this.gamertag
       });
+
+      // this.$store.dispatch("setGamertag", this.gamertag);
       // console.log({email: this.email, password: this.password, confirmPassword: this.confirmPassword, gamerTag:this.gamerTag})
     },
     onDismissed() {

@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import CreateTournament from "./components/Tournaments/CreateTournament";
 import Tournaments from "./components/Tournaments/Tournaments";
 import Tournament from "./components/Tournaments/Tournament";
+import Group from "./components/Tournaments/Groups/viewGroups";
 //User
 import Profile from "./components/User/Profile";
 import Signin from "./components/User/Signin";
@@ -44,7 +45,14 @@ export default new Router({
       beforeEnter: AuthGuard
     },
     {
+      path: "/tournaments/:id/group",
+      props: true,
+      component: Group,
+      beforeEnter: AuthGuard
+    },
+    {
       path: "/profile",
+      props: true,
       name: "profile",
       component: Profile,
       beforeEnter: AuthGuard

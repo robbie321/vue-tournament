@@ -1,6 +1,14 @@
 <template>
-  <v-app>
-    <v-navigation-drawer fixed temporary app v-model="sideNav" style="width: 250px">
+  <v-app
+    style="background-image: linear-gradient(to right bottom, #cee7f9, #d0e3fe, #d7deff, #e3d7ff, #f2d0f8);"
+  >
+    <v-navigation-drawer
+      fixed
+      temporary
+      app
+      v-model="sideNav"
+      style="background-image: linear-gradient(to right bottom, #c2f2f2, #caede5, #d2e7db, #d8e1d6, #dadcd5); width: 250px"
+    >
       <v-list>
         <v-list-tile v-for="item in menuItems" :key="item.title" router :to="item.link">
           <v-list-tile-action>
@@ -16,18 +24,22 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar class="justify-center" app>
+    <v-toolbar
+      class="justify-center"
+      style="background-image: linear-gradient(to bottom, #e1dee1, #e6e1e6, #eae4ea, #efe8ef, #f3ebf4);"
+      app
+    >
       <v-toolbar-side-icon @click.native.stop="sideNav = !sideNav" class="hidden-sm-and-up"></v-toolbar-side-icon>
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">FIFA Tournaments</router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-xs-only">
-        <v-btn flat v-for="item in menuItems" :key="item.title" router :to="item.link">
+        <v-btn flat v-for="item in menuItems" :key="item.title" router :to="item.link" style>
           <v-icon left>{{item.icon}}</v-icon>
           {{item.title}}
         </v-btn>
-        <v-btn flat v-if="userIsAuthenticated" @click="onLogout">
+        <v-btn to="/" flat v-if="userIsAuthenticated" @click="onLogout">
           <v-icon left>exit_to_app</v-icon>Logout
         </v-btn>
       </v-toolbar-items>
@@ -83,10 +95,19 @@ export default {
   methods: {
     onLogout() {
       this.$store.dispatch("logout");
-      console.log(this.$store.getters.userRight);
     }
   }
 };
 </script>
 <style>
+.light-gradient {
+  background-image: linear-gradient(
+    to right bottom,
+    #cee7f9,
+    #dae7fa,
+    #e5e8f9,
+    #ede9f6,
+    #f3ebf4
+  );
+}
 </style>

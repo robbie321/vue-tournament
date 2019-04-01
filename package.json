@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "sass": "node-sass -w src/scss/ -o src/css/ --recursive"
   },
   "dependencies": {
     "firebase": "^5.7.0",
     "moment": "^2.22.2",
+    "node-sass": "^4.11.0",
     "vue": "^2.5.17",
     "vue-date": "^1.2.0",
     "vue-router": "^3.0.1",

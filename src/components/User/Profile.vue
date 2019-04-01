@@ -16,7 +16,7 @@
                 <v-card-text>Console:</v-card-text>
               </v-flex>
               <v-flex class="xs12 sm6">
-                <v-card-text>skimpyfrag</v-card-text>
+                <v-card-text>{{user.gamertag}}</v-card-text>
                 <v-card-text>Xbox</v-card-text>
               </v-flex>
             </v-layout>
@@ -77,6 +77,7 @@
 </template>
 <script>
 export default {
+  props: ["id"],
   computed: {
     user() {
       return this.$store.getters.user;
