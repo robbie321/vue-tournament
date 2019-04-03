@@ -47,8 +47,8 @@ export default new Router({
     {
       path: "/tournaments/:id/group",
       props: true,
-      component: Group,
-      beforeEnter: AuthGuard
+      component: Group
+      // beforeEnter: AuthGuard
     },
     {
       path: "/profile",

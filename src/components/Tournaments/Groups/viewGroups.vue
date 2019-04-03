@@ -3,10 +3,10 @@
     <h1>{{tournament.title}} GROUPS</h1>
     <v-data-table
       :headers="headers"
-      :items="players"
+      :items="groups"
       :pagination.sync="pagination"
       :total-items="totalDesserts"
-      class="elevation-1"
+      class="elevation-5"
     >
       <!-- <template v-slot:items="props">
         <td>{{ props.item.title }}</td>
@@ -48,6 +48,16 @@ export default {
         { text: "Draw", value: "draw" },
         { text: "Lost", value: "lost" },
         { text: "Points", value: "points" }
+      ],
+      groups: [
+        {
+          title: "group 1",
+          played: "0",
+          won: "0",
+          drawn: "0",
+          lost: "0",
+          points: "0"
+        }
       ]
     };
   },

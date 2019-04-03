@@ -85,8 +85,84 @@ export default {
         .catch(error => {
           console.log(error);
         });
-      //reach to fire base to store it
-      // commit('createTournament', tournament)
+    },
+    MakeGroups({ commit, getters }, payload) {
+      const user = getters.user;
+      let players = [];
+      firebase
+        .database()
+        .ref("tournaments/" + payload)
+        .child("/players/")
+        .once("value")
+        .then(snapshot => {
+          snapshot.forEach(data => {
+            let childKey = data.key;
+            let childData = data.val();
+            players.push(childData);
+            console.log("Player added" + childData);
+          });
+          let groupNumber = 1;
+          firebase
+            .database()
+            .ref("tournaments/" + payload)
+            .child("/groups/")
+            .child(`/group ${groupNumber}`)
+            .push(players)
+            .then(() => {
+              groupNumber++;
+            });
+        })
+        .catch(error => {
+          console.log(error);
+          commit("setLoading", false);
+        });
+
+      console.log("Groups Created");
+      // const id = payload.id;
+      // const title = payload.title;
+      // const players = [];
+      // console.log(
+      //   players +
+      //     "\n" +
+      //     "Groups have been formed for group " +
+      //     title +
+      //     " with id " +
+      //     id
+      // );
+      // firebase
+      //   .database()
+      //   .ref("tournaments/" + id)
+      //   .child("/players/")
+      //   .once("value", data => {
+      //     console.log(data.val());
+      //     data.forEach(function(snapshot) {
+      //       // let key = snapshot.key;
+      //       let childData = snapshot.val();
+      //       players.push(childData);
+      //       console.log(players);
+      //     });
+      //   });
+      /**
+       * TODO
+       * when all players are put into 'players' array
+       * seperate into new group table
+       *
+       * a group will have a group number and an even amount of
+       * players (derived from dividing the players array by number
+       * of players per group)
+       *
+       *  */
+      // let groups = [...new Array(players.length / 6)];
+      // for (i = 0; i < groups.length; i++) {
+      //   for (j = 0; j < players.length; j++) {
+      //       groups[i] = players[j];
+      //   }
+      // }
+      // firebase
+      //   .database()
+      //   .ref("tournaments/" + id)
+      //   .child("/groups/")
+      //   .set(players);
     }
   },
   //get tabel in our components

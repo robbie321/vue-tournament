@@ -49,6 +49,20 @@ export default {
           console.log(error);
           commit("setLoading", false);
         });
+      //add players gamertag to tournament
+      firebase
+        .database()
+        .ref("tournaments/" + payload)
+        .child("/players/")
+        .push(user.gamertag)
+        .then(() => {
+          // let playerKey = data.key;
+          commit("setLoading", false);
+        })
+        .catch(error => {
+          console.log(error);
+          commit("setLoading", false);
+        });
     },
     unregisterUserFromTournament({ commit, getters }, payload) {
       commit("setLoading", true);
@@ -70,101 +84,32 @@ export default {
           console.log(error);
           commit("setLoading", false);
         });
-    },
-    // registerUserForTournament({ commit, getters }, payload) {
-    //   commit("setLoading", true);
-    //   const user = getters.user;
-    //   firebase
-    //     .database()
-    //     .ref("tournaments/" + payload)
-    //     .child("/players/")
-    //     .push(user.id)
-    //     .then(data => {
-    //       commit("setLoading", false);
-    //       commit("registerUserForTournament", { id: payload, fbKey: data.key });
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //       commit("setLoading", false);
-    //     });
-    // },
-
-    // unregisterUserFromTournament({ commit, getters }, payload) {
-    //   commit("setLoading", true);
-    //   const user = getters.user;
-    //   if (!user.fbKey) {
-    //     return;
-    //   }
-    //   console.log(payload);
-    //   console.log(user.id);
-    //   const fbKey = user.fbKey[payload];
-    //   firebase
-    //     .database()
-    //     .ref("tournaments/" + payload + "/players/" + user.id)
-    //     .child(fbKey)
-    //     .remove()
-    //     .then(() => {
-    //       commit("setLoading", false);
-    //       commit("unregisterUserFromTournament", payload);
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //       commit("setLoading", false);
-    //     });
-    // },
-    MakeGroups(commit, payload) {
-      // const user = getters.user;
-      //tournament id
-      const id = payload.id;
-      const title = payload.title;
-      const players = [];
-      // const tournament = getters.loadedTournament(id);
-      console.log(
-        players +
-          "\n" +
-          "Groups have been formed for group " +
-          title +
-          " with id " +
-          id
-      );
 
       firebase
         .database()
-        .ref("tournaments/" + id)
+        .ref("tournaments/" + payload)
         .child("/players/")
-        .once("value", data => {
-          // let key = data.key;
-          // let childKey = data.child("/users").key;
-          console.log(data.val());
-          data.forEach(function(snapshot) {
-            // let key = snapshot.key;
-            let childData = snapshot.val();
-            players.push(childData);
-            console.log(players);
+        .once("value")
+        .then(snapshot => {
+          snapshot.forEach(data => {
+            let childKey = data.key;
+            let childData = data.val();
+            if (childData === user.gamertag) {
+              firebase
+                .database()
+                .ref("tournaments/" + payload)
+                .child("/players/")
+                .child(childKey)
+                .remove();
+              console.log("Removed from tournament");
+            }
+            // console.log("key: " + childKey + "\nValue: " + childData + "\n\n");
           });
+        })
+        .catch(error => {
+          console.log(error);
+          commit("setLoading", false);
         });
-
-      /**
-       * TODO
-       * when all players are put into 'players' array
-       * seperate into new group table
-       *
-       * a group will have a group number and an even amount of
-       * players (derived from dividing the players array by number
-       * of players per group)
-       *
-       *  */
-      // let groups = [...new Array(players.length / 6)];
-      // for (i = 0; i < groups.length; i++) {
-      //   for (j = 0; j < players.length; j++) {
-      //       groups[i] = players[j];
-      //   }
-      // }
-      // firebase
-      //   .database()
-      //   .ref("tournaments/" + id)
-      //   .child("/groups/")
-      //   .set(players);
     },
 
     signUserUp({ commit }, payload) {
