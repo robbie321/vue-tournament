@@ -55,7 +55,8 @@ export default {
               players: obj[key].players,
               sdate: obj[key].setLoading,
               edate: obj[key].edate,
-              cdate: obj[key].cdate
+              cdate: obj[key].cdate,
+              isStarted: obj[key].isStarted
             });
           }
           commit("setLoadedTournaments", tournaments);
@@ -72,7 +73,8 @@ export default {
         players: [],
         sdate: payload.sdate,
         edate: payload.edate,
-        cdate: payload.cdate
+        cdate: payload.cdate,
+        isStarted: false
       };
       firebase
         .database()
@@ -118,30 +120,6 @@ export default {
         });
 
       console.log("Groups Created");
-      // const id = payload.id;
-      // const title = payload.title;
-      // const players = [];
-      // console.log(
-      //   players +
-      //     "\n" +
-      //     "Groups have been formed for group " +
-      //     title +
-      //     " with id " +
-      //     id
-      // );
-      // firebase
-      //   .database()
-      //   .ref("tournaments/" + id)
-      //   .child("/players/")
-      //   .once("value", data => {
-      //     console.log(data.val());
-      //     data.forEach(function(snapshot) {
-      //       // let key = snapshot.key;
-      //       let childData = snapshot.val();
-      //       players.push(childData);
-      //       console.log(players);
-      //     });
-      //   });
       /**
        * TODO
        * when all players are put into 'players' array
@@ -163,6 +141,12 @@ export default {
       //   .ref("tournaments/" + id)
       //   .child("/groups/")
       //   .set(players);
+    },
+    setStarting({ commit, getters }, payload) {
+      firebase
+        .database()
+        .ref("tournaments/" + payload)
+        .update({ isStarted: "true" });
     }
   },
   //get tabel in our components

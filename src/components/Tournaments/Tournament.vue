@@ -18,7 +18,12 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <app-register :tournamentId="tournament.id" v-if="userIsAuthenticated"></app-register>
-            <v-btn id="change" v-if="!isStarted" v-on:click="makeGroups" class="warning">Make Groups</v-btn>
+            <v-btn
+              id="change"
+              v-if="!tournament.isStarted"
+              v-on:click="makeGroups"
+              class="warning"
+            >Make Groups</v-btn>
             <!-- <v-btn
               :to="'/tournaments/' + tournament.id +'/group'"
               v-on:click="viewTournament"
@@ -37,7 +42,6 @@ export default {
   props: ["id"],
   data() {
     return {
-      isStarted: false,
       isAdmin: true
     };
   },
@@ -54,8 +58,8 @@ export default {
   },
   methods: {
     makeGroups() {
-      this.isStarted = true;
       this.$store.dispatch("MakeGroups", this.id);
+      this.$store.dispatch("setStarting", this.id);
     }
   }
 };
