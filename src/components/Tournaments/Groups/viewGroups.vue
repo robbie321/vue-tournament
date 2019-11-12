@@ -1,22 +1,19 @@
 <template>
   <v-container>
-    <h1>{{tournament.title}} GROUPS</h1>
-    <v-data-table
-      :headers="headers"
-      :items="groups"
-      :pagination.sync="pagination"
-      :total-items="totalDesserts"
-      class="elevation-5"
-    >
-      <!-- <template v-slot:items="props">
-        <td>{{ props.item.title }}</td>
-        <td class="text-xs-right">{{ props.item.played }}</td>
-        <td class="text-xs-right">{{ props.item.won }}</td>
-        <td class="text-xs-right">{{ props.item.draw }}</td>
-        <td class="text-xs-right">{{ props.item.lost }}</td>
-        <td class="text-xs-right">{{ props.item.points }}</td>
-      </template>-->
-    </v-data-table>
+    <h1>{{ tournament.title }} GROUPS</h1>
+    <div>
+      <b-table
+        striped
+        bordered
+        outlined
+        small
+        hover
+        dark
+        fixed
+        :items="getPlayers"
+        :fields="fields"
+      ></b-table>
+    </div>
   </v-container>
 </template>
 <script>
@@ -34,6 +31,7 @@ export default {
           points: "30"
         }
       ],
+      fields: ["title", "played", "won", "draw", "lost", "points"],
       loading: true,
       pagination: {},
       headers: [
@@ -69,12 +67,23 @@ export default {
   },
   methods: {
     getPlayers() {
+      //TODO
+      //PUT PLAYERS INTO GROUPS
+      // players = [tournament().players];
+      // for (i = 0; i < players.length; i++) {
+      //   group[i] = {
+      //     title: players[i].title,
+      //     played: players[i].played,
+      //     won: players[i].won,
+      //     draw: players[i].drawn,
+      //     lost: players[i].lost,
+      //     points: players[i].points
+      //   };
+      // }
+      print(tournament.players.title);
       return [tournament.players];
     }
   }
 };
 </script>
-<style scoped>
-</style>
-
-
+<style scoped></style>
