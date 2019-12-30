@@ -1,12 +1,14 @@
 import * as firebase from "firebase";
-import { stat } from "fs";
+import {
+  stat
+} from "fs";
 
 export default {
+
+  //HARD CODED TOURNAMENTS
   state: {
-    loadedTournaments: [
-      {
-        imageURL:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGmbkHic4R31bSOrXSuNAYA0sU8FsNK2gr31bbEn2c0BJqUqQZ",
+    loadedTournaments: [{
+        imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGmbkHic4R31bSOrXSuNAYA0sU8FsNK2gr31bbEn2c0BJqUqQZ",
         id: "1",
         title: "Kilkenny FIFA Tournament",
         description: "",
@@ -15,8 +17,7 @@ export default {
         cdate: new Date().toDateString()
       },
       {
-        imageURL:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGmbkHic4R31bSOrXSuNAYA0sU8FsNK2gr31bbEn2c0BJqUqQZ",
+        imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGmbkHic4R31bSOrXSuNAYA0sU8FsNK2gr31bbEn2c0BJqUqQZ",
         id: "2",
         title: "Dublin FIFA Tournament",
         description: "",
@@ -38,7 +39,9 @@ export default {
 
   //dispatch mutations
   actions: {
-    loadTournaments({ commit }) {
+    loadTournaments({
+      commit
+    }) {
       firebase
         .database()
         .ref("tournaments")
@@ -52,6 +55,8 @@ export default {
               title: obj[key].title,
               description: obj[key].description,
               imageURL: obj[key].imageURL,
+              number_of_players: obj[key].number_of_players,
+              groups: obj[key].groups,
               players: obj[key].players,
               sdate: obj[key].setLoading,
               edate: obj[key].edate,
@@ -65,12 +70,16 @@ export default {
           console.log(error);
         });
     },
-    createTournament({ commit }, payload) {
+    createTournament({
+      commit
+    }, payload) {
       const tournament = {
         title: payload.title,
         description: payload.description,
         imageURL: payload.imageURL,
-        players: [],
+        players: [], //this is the array for storing all the players information
+        number_of_players: payload.number_of_players,
+        groups: payload.groups,
         sdate: payload.sdate,
         edate: payload.edate,
         cdate: payload.cdate,
@@ -82,71 +91,29 @@ export default {
         .push(tournament)
         .then(data => {
           const key = data.key;
-          commit("createTournament", { ...tournament, id: key });
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    MakeGroups({ commit, getters }, payload) {
-      const user = getters.user;
-      let players = [];
-      firebase
-        .database()
-        .ref("tournaments/" + payload)
-        .child("/players/")
-        .once("value")
-        .then(snapshot => {
-          snapshot.forEach(data => {
-            let childKey = data.key;
-            let childData = data.val();
-            players.push(childData);
-            console.log("Player added" + childData);
+          commit("createTournament", {
+            ...tournament,
+            id: key
           });
-          let groupNumber = 1;
-          firebase
-            .database()
-            .ref("tournaments/" + payload)
-            .child("/groups/")
-            .child(`/group ${groupNumber}`)
-            .push(players)
-            .then(() => {
-              groupNumber++;
-            });
         })
         .catch(error => {
           console.log(error);
-          commit("setLoading", false);
         });
-
-      console.log("Groups Created");
-      /**
-       * TODO
-       * when all players are put into 'players' array
-       * seperate into new group table
-       *
-       * a group will have a group number and an even amount of
-       * players (derived from dividing the players array by number
-       * of players per group)
-       *
-       *  */
-      // let groups = [...new Array(players.length / 6)];
-      // for (i = 0; i < groups.length; i++) {
-      //   for (j = 0; j < players.length; j++) {
-      //       groups[i] = players[j];
-      //   }
-      // }
-      // firebase
-      //   .database()
-      //   .ref("tournaments/" + id)
-      //   .child("/groups/")
-      //   .set(players);
     },
-    setStarting({ commit, getters }, payload) {
+
+    //CREATE GROUPS
+    MakeGroups() {},
+
+    setStarting({
+      commit,
+      getters
+    }, payload) {
       firebase
         .database()
         .ref("tournaments/" + payload)
-        .update({ isStarted: "true" });
+        .update({
+          isStarted: "true"
+        });
     }
   },
   //get tabel in our components

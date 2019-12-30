@@ -11,7 +11,7 @@
         <v-flex id="profile" class="mt-2">
           <v-card>
             <v-layout class="row">
-              <v-flex class="xs12 sm6">
+              <v-flex xs12 sm6>
                 <v-card-text>Gamer Tag:</v-card-text>
                 <v-card-text>Console:</v-card-text>
               </v-flex>

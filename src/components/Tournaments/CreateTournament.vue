@@ -26,7 +26,7 @@
           </v-layout>
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
-              <img :src="imageURL" height="200">
+              <img :src="imageURL" height="200" />
             </v-flex>
           </v-layout>
           <v-layout row>
@@ -38,6 +38,28 @@
                 v-model="description"
                 required
               ></v-textarea>
+            </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex xs12 sm6 offset-sm3>
+              <v-text-field
+                name="players"
+                label="Number of Players"
+                id="players"
+                v-model="number_of_players"
+                required
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex xs12 sm6 offset-sm3>
+              <v-text-field
+                name="groups"
+                label="Number of Groups"
+                id="groups"
+                v-model="groups"
+                required
+              ></v-text-field>
             </v-flex>
           </v-layout>
           <v-layout row>
@@ -87,11 +109,11 @@
       </v-flex>
     </v-layout>
 
-    <v-layout row>
+    <!-- <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
         <v-card>
           <v-container>
-            <!-- ADMIN ACTIONS -->
+   
             <form
               @submit.prevent="makeUserAdmin"
               class="center-align admin-actions"
@@ -120,12 +142,12 @@
                   </v-btn>
                 </v-flex>
               </v-layout>
-              <!-- <button class="btn-small yellow darken-2 z-depth-0">Make admin</button> -->
+            
             </form>
           </v-container>
         </v-card>
       </v-flex>
-    </v-layout>
+    </v-layout>-->
   </v-container>
 </template>
 <script>
@@ -136,6 +158,8 @@ export default {
     return {
       email: "",
       title: "",
+      number_of_players: "",
+      groups: "",
       imageURL: "",
       description: "",
       sdate: new Date().toDateString(),
@@ -179,6 +203,8 @@ export default {
         title: this.title,
         description: this.description,
         imageURL: this.imageURL,
+        number_of_players: this.number_of_players,
+        groups: this.groups,
         sdate: this.startDate,
         edate: this.endDate,
         cdate: this.cdate

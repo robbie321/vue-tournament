@@ -11,14 +11,14 @@ import Vuetify from "vuetify";
 import AlertCmp from "./components/Shared/Alert.vue";
 
 //boostrap
-import BootstrapVue from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+// import BootstrapVue from 'bootstrap-vue'
+// import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import RegisterDialog from "./components/Tournaments/Registration/RegisterDialog";
 
 Vue.use(Vuetify);
-Vue.use(BootstrapVue)
+// Vue.use(BootstrapVue)
 Vue.config.productionTip = false;
 
 Vue.filter("date", DateFilter);
