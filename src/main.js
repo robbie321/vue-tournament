@@ -32,10 +32,10 @@ new Vue({
   created() {
     //initialise firebase
     firebase.initializeApp({
-      apiKey: "AIzaSyC3tVP-fuqR9f4xDBrPiINFxMHqq5kYup4",
-      authDomain: "tournament-website.firebaseapp.com",
-      databaseURL: "https://tournament-website.firebaseio.com",
-      projectId: "tournament-website",
+      apiKey: "",
+      authDomain: "",
+      databaseURL: "",
+      projectId: "",
       storageBucket: ""
     });
     firebase.auth().onAuthStateChanged(user => {
