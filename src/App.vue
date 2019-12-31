@@ -1,5 +1,6 @@
 <template>
   <v-app
+    v-if="!$store.getters.loading"
     style="background-image: linear-gradient(to right bottom, #cee7f9, #d0e3fe, #d7deff, #e3d7ff, #f2d0f8);"
   >
     <v-navigation-drawer
@@ -52,6 +53,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   // name: 'App',
 
@@ -61,19 +63,22 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["loading"]),
     menuItems() {
       let menuItems = [
         { icon: "lock", title: "sign in", link: "/signin" },
         { icon: "lock", title: "sign up", link: "/signup" }
       ];
-      if (this.userIsAuthenticated) {
+      //also add && !this.userIsAdmin so 'admin' must be false
+      if (this.userIsAuthenticated && this.userIsAdmin) {
         menuItems = [
           { icon: "home", title: "how it works", link: "/" },
           { icon: "shop", title: "tournaments", link: "/tournaments" },
           { icon: "shop", title: "create", link: "/tournament/new" },
           { icon: "home", title: "Profile", link: "/profile" }
         ];
-      } else if (this.userIsAuthenticated && this.userIsAdmin) {
+        console.log("hi", this.userIsAdmin);
+      } else if (this.userIsAuthenticated && !this.userIsAdmin) {
         menuItems = [
           { icon: "home", title: "how it works", link: "/" },
           { icon: "shop", title: "tournaments", link: "/tournaments" },
@@ -89,12 +94,22 @@ export default {
       );
     },
     userIsAdmin() {
-      return this.$store.getters.userRight;
+      console.log("user role :", this.$store.getters.user);
+      return this.$store.getters.user.role == "admin" ? true : false;
     }
   },
   methods: {
     onLogout() {
       this.$store.dispatch("logout");
+    }
+  },
+  watch: {
+    loading(val) {
+      if (val == true) {
+        this.$swal.showLoading();
+      } else {
+        this.$swal.close();
+      }
     }
   }
 };

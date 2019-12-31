@@ -1,5 +1,7 @@
 import * as firebase from "firebase";
-import { stat } from "fs";
+import {
+  stat
+} from "fs";
 
 export default {
   state: {
@@ -33,38 +35,70 @@ export default {
   },
   //dispatch mutations
   actions: {
-    registerUserForTournament({ commit, getters }, payload) {
+    registerUserForTournament({
+      commit,
+      getters
+    }, payload) {
       commit("setLoading", true);
       const user = getters.user;
-      firebase
-        .database()
-        .ref("/users/" + user.id)
-        .child("/registrations/")
-        .push(payload)
-        .then(data => {
-          commit("setLoading", false);
-          commit("registerUserForTournament", { id: payload, fbKey: data.key });
-        })
-        .catch(error => {
-          console.log(error);
-          commit("setLoading", false);
+
+      //# using multipath update rather than two explicit firebase queries
+
+      var gamertag = user.gamertag
+      var DB = firebase.database()
+      var multipath = {}
+      var regKey = DB.ref().push().key
+      multipath["/users/" + user.id + "/registrations/" + DB.ref().push().key] = payload
+
+      multipath["tournaments/" + payload + "/players/" + DB.ref().push().key] = gamertag
+      firebase.database().ref().update(multipath).then(res => {
+        commit("setLoading", false);
+        commit("registerUserForTournament", {
+          id: payload,
+          fbKey: regKey
         });
-      //add players gamertag to tournament
-      firebase
-        .database()
-        .ref("tournaments/" + payload)
-        .child("/players/")
-        .push(user.gamertag)
-        .then(() => {
-          // let playerKey = data.key;
-          commit("setLoading", false);
-        })
-        .catch(error => {
-          console.log(error);
-          commit("setLoading", false);
-        });
+      }).catch(err => {
+        console.log(err)
+      })
+
+      //#commented 
+
+      // firebase
+      //   .database()
+      //   .ref("/users/" + user.id)
+      //   .child("/registrations/")
+      //   .push(payload)
+      //   .then(data => {
+      //     commit("setLoading", false);
+      //     commit("registerUserForTournament", {
+      //       id: payload,
+      //       fbKey: data.key
+      //     });
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //     commit("setLoading", false);
+      //   });
+      // //add players gamertag to tournament
+      // firebase
+      //   .database()
+      //   .ref("tournaments/" + payload)
+      //   .child("/players/")
+      //   .push(user.gamertag)
+      //   .then(() => {
+      //     // let playerKey = data.key;
+      //     commit("setLoading", false);
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //     commit("setLoading", false);
+      //   });
+
     },
-    unregisterUserFromTournament({ commit, getters }, payload) {
+    unregisterUserFromTournament({
+      commit,
+      getters
+    }, payload) {
       commit("setLoading", true);
       const user = getters.user;
       if (!user.fbKeys) {
@@ -111,8 +145,9 @@ export default {
           commit("setLoading", false);
         });
     },
-
-    signUserUp({ commit }, payload) {
+    signUserUp({
+      commit
+    }, payload) {
       commit("setLoading", true);
       commit("clearError");
       firebase
@@ -124,16 +159,25 @@ export default {
               displayName: payload.gamertag
             })
             .then(() => {
-              commit("setLoading", false);
+              //# added "role == user" BY DEFAULT (only for admin it can be changed in database)
               const newUser = {
                 id: user.user.uid,
                 gamertag: user.user.displayName,
                 registeredTournaments: [],
-                fbKeys: {}
+                fbKeys: {},
+                email:payload.email,
+                //#
+                role: 'user'
               };
-              commit("setUser", newUser);
 
-              console.log("gamertag: " + newUser.gamertag);
+              firebase.database().ref('users/' + user.user.uid).set(newUser).then((res) => {
+                commit("setUser", newUser);
+                commit("setLoading", false);
+                
+                console.log("gamertag: " + newUser.gamertag);
+              }).catch(err => {
+                console.log('error pushing data to database after sign up :', err)
+              })
             });
         })
         .catch(error => {
@@ -142,23 +186,30 @@ export default {
           console.log(error);
         });
     },
-    signUserIn({ commit, getters }, payload) {
+    signUserIn({
+      commit,
+      getters
+    }, payload) {
       commit("setLoading", true);
       commit("clearError");
       firebase
         .auth()
         .signInWithEmailAndPassword(payload.email, payload.password)
         .then(user => {
-          commit("setLoading", false);
-          const newUser = {
-            id: user.uid,
-            gamertag: user.displayName,
-            registeredTournaments: [],
-            fbKeys: {}
-          };
-          //   console.log("Signed user in " + gamertag);
+          //#fetching data on sign in from users/ node
+          firebase.database().ref('users/' + user.uid).once('value', snap => {
+           
+            // const newUser = {
+            //   id: user.uid,
+            //   gamertag: user.displayName,
+            //   registeredTournaments: [],
+            //   fbKeys: {}
+            // };
+            //   console.log("Signed user in " + gamertag);
+            commit("setUser", snap.val());
+            commit("setLoading", false);
+          })
 
-          commit("setUser", newUser);
         })
         .catch(error => {
           commit("setLoading", false);
@@ -166,23 +217,34 @@ export default {
           console.log(error);
         });
     },
-    autoSignIn({ commit, getters }, payload) {
-      commit("setUser", {
-        id: payload.uid,
-        gamertag: payload.displayName,
-        registeredTournaments: [],
-        fbKeys: {}
-      });
-      //   console.log("Signed user in " + getters.user.gamertag);
-    },
-    fetchUserData({ commit, getters }) {
+    // autoSignIn({
+    //   commit,
+    //   getters,
+    //   dispatch
+    // }, payload) {
+
+    //   commit("setUser", {
+    //     id: payload.uid,
+    //     gamertag: payload.displayName,
+    //     registeredTournaments: [],
+    //     fbKeys: {}
+    //   });
+
+    //   dispatch("fetchUserData");
+
+    //   //   console.log("Signed user in " + getters.user.gamertag);
+    // },
+    autoSignIn({
+      commit,
+      getters
+    }, payload) {
       commit("setLoading", true);
       firebase
         .database()
-        .ref("/users/" + getters.user.id + "/registrations/")
+        .ref("users/" + payload.uid)
         .once("value")
         .then(data => {
-          const dataPairs = data.val();
+          const dataPairs = data.val().registrations;
           //properties: fbKey, value: tournament ID
           let registeredTournaments = [];
           //swap data pairs object so that properties: tournamentID and value: fbKey
@@ -191,14 +253,13 @@ export default {
             registeredTournaments.push(dataPairs[key]);
             swappedPairs[dataPairs[key]] = key;
           }
-          const updatedUser = {
-            id: getters.user.id,
-            gamertag: getters.user.gamertag,
-            registeredTournaments: registeredTournaments,
-            fbKeys: swappedPairs
-          };
-          commit("setLoading", false);
+
+          const updatedUser = data.val()
+          updatedUser.registeredTournaments = registeredTournaments
+          updatedUser.fbKeys = swappedPairs
+
           commit("setUser", updatedUser);
+          commit("setLoading", false);
         })
         .catch(error => {
           console.log(error);
@@ -212,7 +273,9 @@ export default {
     //     .ref("/users/" + getters.user.id + "/gamertag/")
     //     .once("value");
     // },
-    logout({ commit }) {
+    logout({
+      commit
+    }) {
       firebase.auth().signOut();
       commit("setUser", null);
     }

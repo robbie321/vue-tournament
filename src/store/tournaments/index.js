@@ -83,12 +83,14 @@ export default {
         sdate: payload.sdate,
         edate: payload.edate,
         cdate: payload.cdate,
-        isStarted: false
+        isStarted: false,
+        //# creating a unique key to store it in .this node also
+        key:firebase.database().ref().push().key
       };
       firebase
         .database()
-        .ref("tournaments")
-        .push(tournament)
+        .ref("tournaments/"+tournament.key)
+        .set(tournament)
         .then(data => {
           const key = data.key;
           commit("createTournament", {
@@ -102,7 +104,15 @@ export default {
     },
 
     //CREATE GROUPS
-    MakeGroups() {},
+    MakeGroups(state,payload) {
+      console.log('pay : ',payload)
+      firebase.database().ref('users').once('value',snap=> {
+        var allData = snap.val()
+        for(var data in allData) {
+          
+        }
+      })
+    },
 
     setStarting({
       commit,
@@ -112,7 +122,7 @@ export default {
         .database()
         .ref("tournaments/" + payload)
         .update({
-          isStarted: "true"
+          isStarted: true
         });
     }
   },

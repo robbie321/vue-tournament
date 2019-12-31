@@ -1,3 +1,4 @@
+
 export default {
   state: {
     loading: false,
@@ -25,7 +26,8 @@ export default {
   //get tabel in our components
   getters: {
     loading(state) {
-      state.loading;
+
+      return state.loading;
     },
     error(state) {
       return state.error;

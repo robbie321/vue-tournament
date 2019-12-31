@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-
 import Home from "./components/Home";
 //tournaments
 import CreateTournament from "./components/Tournaments/CreateTournament";
@@ -11,17 +10,17 @@ import Group from "./components/Tournaments/Groups/viewGroups";
 import Profile from "./components/User/Profile";
 import Signin from "./components/User/Signin";
 import Signup from "./components/User/Signup";
-
+//store
+import {
+  store
+} from './store/'
 //aut
 import AuthGuard from "./auth-guard";
-
 Vue.use(Router);
-
 export default new Router({
   mode: "history",
   base: process.env.BASE_URL,
-  routes: [
-    {
+  routes: [{
       path: "/",
       name: "home",
       component: Home
@@ -35,7 +34,15 @@ export default new Router({
     {
       path: "/tournament/new",
       name: "CreateTournament",
-      component: CreateTournament
+      component: CreateTournament,
+      beforeEnter: (to, from, next) => {
+        if (store.getters.user && store.getters.user.role == 'admin') {
+          next()
+        } else {
+          
+          next('/')
+        }
+      },
     },
     {
       path: "/tournaments/:id",
@@ -60,12 +67,26 @@ export default new Router({
     {
       path: "/signup",
       name: "Signup",
-      component: Signup
+      component: Signup,
+      beforeEnter: (to, from, next) => {
+        if (store.getters.user == null) {
+          next()
+        } else {
+          next('/')
+        }
+      }
     },
     {
       path: "/signin",
       name: "Signin",
-      component: Signin
+      component: Signin,
+      beforeEnter: (to, from, next) => {
+        if (store.getters.user == null) {
+          next()
+        } else {
+          next('/')
+        }
+      }
     }
   ]
 });

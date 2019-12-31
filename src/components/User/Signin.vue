@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <!-- # init user to activate Watch  -->
+    <div style="display:none">{{user}}</div>
     <v-layout row v-if="error">
       <v-flex xs12 sm6 offset-sm3>
         <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
@@ -53,12 +55,14 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      checkUser: ""
     };
   },
   computed: {
     user() {
-      return this.$store.getters.user;
+      //#watch is not working properly for computed props so doing alternative stuff here
+      this.checkUser = this.$store.getters.user;
     },
     error() {
       return this.$store.getters.error;
@@ -68,7 +72,7 @@ export default {
     }
   },
   watch: {
-    user(value) {
+    checkUser(value) {
       if (value != null && value !== undefined) {
         this.$router.push("/");
       }

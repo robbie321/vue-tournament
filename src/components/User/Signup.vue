@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <!-- # init user to activate Watch  -->
+    <div style="display:none">{{user}}</div>
     <v-layout row v-if="error">
       <v-flex xs12 sm6 offset-sm3>
         <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
@@ -85,7 +87,8 @@ export default {
       password: "",
       confirmPassword: "",
       gamertag: "",
-      admin: true
+      admin: true,
+      checkUser:""
     };
   },
   computed: {
@@ -95,7 +98,7 @@ export default {
         : true;
     },
     user() {
-      return this.$store.getters.user;
+      this.checkUser = this.$store.getters.user;
     },
     error() {
       return this.$store.getters.error;
@@ -105,7 +108,7 @@ export default {
     }
   },
   watch: {
-    user(value) {
+    checkUser(value) {
       if (value != null && value !== undefined) {
         this.$router.push("/");
       }

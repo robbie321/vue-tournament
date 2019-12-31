@@ -20,7 +20,7 @@
             <app-register :tournamentId="tournament.id" v-if="userIsAuthenticated"></app-register>
             <v-btn
               id="change"
-              v-if="!tournament.isStarted"
+              v-if="isAdmin"
               v-on:click="makeGroups"
               class="warning"
             >Make Groups</v-btn>
@@ -41,11 +41,12 @@
 export default {
   props: ["id"],
   data() {
-    return {
-      isAdmin: true
-    };
+    return {};
   },
   computed: {
+    isAdmin() {
+      return this.$store.getters.user.role == "admin" ? true : false;
+    },
     userIsAuthenticated() {
       return (
         this.$store.getters.user !== null &&
