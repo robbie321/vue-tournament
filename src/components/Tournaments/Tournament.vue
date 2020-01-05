@@ -17,12 +17,18 @@
           <v-card-text></v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <app-register :tournamentId="tournament.id" v-if="userIsAuthenticated"></app-register>
+            <app-register  :tournamentId="tournament.id" v-if="userIsAuthenticated"></app-register>
             <v-btn
               id="change"
               v-if="isAdmin"
-              v-on:click="makeGroups"
-              class="warning"
+              @click="viewGroups()"
+              class="warning" ml-1
+            >View Groups</v-btn>
+            <v-btn
+              id="change"
+              v-if="isAdmin"
+              @click="makeGroups"
+              class="warning" ml-1
             >Make Groups</v-btn>
             <!-- <v-btn
               :to="'/tournaments/' + tournament.id +'/group'"
@@ -61,6 +67,9 @@ export default {
     makeGroups() {
       this.$store.dispatch("MakeGroups", this.id);
       this.$store.dispatch("setStarting", this.id);
+    },
+    viewGroups() {
+      this.$router.push(this.id+'/group')
     }
   }
 };

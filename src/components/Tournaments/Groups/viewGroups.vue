@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>{{ groups.title }} GROUPS</h1>
+    <!-- <h1>{{ groups.title }} GROUPS</h1> -->
     <div>
       <v-card flat tile>
         <v-window v-model="onboarding" reverse>
@@ -30,12 +30,45 @@
         </v-card-actions>
       </v-card>
       <div>
-        <v-data-table :headers="headers" :items="desserts" :items-per-page="5" class="elevation-1">
+        <v-data-table :headers="headers" :items="players" hide-actions item-key="title">
           <template v-slot:items="props">
-            <td class="text-xs-right">{{ props.item.name }}</td>
-            <td class="text-xs-right">{{ props.item.fat }}</td>
+            <tr v-if="props.item.showGroupTitle" colspan="5">
+              <td class="headline">Group {{props.item.group}}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>{{ props.item.title }}</td>
+              <td>{{ props.item.played }}</td>
+              <td>{{ props.item.won }}</td>
+              <td>{{ props.item.drawn }}</td>
+              <td>{{ props.item.lost }}</td>
+              <td>{{ props.item.points }}</td>
+            </tr>
           </template>
         </v-data-table>
+      </div>
+      <div>
+        <h1 class="text-xs-center ma-5">Fixtures</h1>
+        <v-layout row wrap>
+          <v-flex md4 v-for="(fixture, i) in fixtures" :key="i">
+            <v-card v-for="(item,key, ii) in fixture" :key="ii" class="ma-2">
+              <h4 class="text-xs-center pa-4">{{key}}</h4>
+              <hr />
+              <v-card-text v-for="(round, iii) in item" :key="iii" class="text-xs-center">
+                <span v-for="(players , iiii) in round" :key="iiii">
+                  <span v-for="(p, iiiii) in players" :key="iiiii">
+                    <span v-if="iiiii != 'player1'"  class="headline" style="color:red">&nbsp;&nbsp;VS&nbsp;&nbsp;</span>
+                    <span class="title">{{p.title}}</span>
+                  </span>
+                </span>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
       </div>
       <!-- <b-table striped bordered outlined small hover dark fixed :items="items" :fields="fields"></b-table> -->
     </div>
@@ -61,130 +94,61 @@ export default {
       fields: ["Gamertag", "played", "won", "draw", "lost", "points"],
       loading: true,
       pagination: {},
-      // headers: [
-      //   {
-      //     text: "Group Name",
-      //     align: "left",
-      //     sortable: false,
-      //     value: "title"
-      //   },
-      //   { text: "Played", value: "played" },
-      //   { text: "Won", value: "won" },
-      //   { text: "Draw", value: "draw" },
-      //   { text: "Lost", value: "lost" },
-      //   { text: "Points", value: "points" }
-      // ],
-      groups: [
-        {
-          title: "group 1",
-          played: "0",
-          won: "0",
-          drawn: "0",
-          lost: "0",
-          points: "0"
-        }
-      ],
       headers: [
         {
-          text: "Dessert (100g serving)",
+          text: "Title",
           align: "left",
           sortable: false,
-          value: "name"
+          value: "title"
         },
-        { text: "Calories", value: "calories" },
-        { text: "Fat (g)", value: "fat" },
-        { text: "Carbs (g)", value: "carbs" },
-        { text: "Protein (g)", value: "protein" },
-        { text: "Iron (%)", value: "iron" }
-      ],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%"
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%"
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%"
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%"
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%"
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%"
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%"
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%"
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%"
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%"
-        }
+        { text: "Played", value: "played" },
+        { text: "Won", value: "won" },
+        { text: "Draw", value: "draw" },
+        { text: "Lost", value: "lost" },
+        { text: "Points", value: "points" }
       ]
+      // groups: [
+      //   {
+      //     title: "group 1",
+      //     played: 0,
+      //     won: 0,
+      //     drawn: 0,
+      //     lost:0,
+      //     points: 0
+      //   }
+      // ],
     };
   },
   props: ["id"],
   computed: {
     tournament() {
       return this.$store.getters.loadedTournament(this.id);
+    },
+    players() {
+      var playerGroups = this.tournament.playerGroups;
+      var arr = [];
+      var p = 1;
+      for (var group in playerGroups) {
+        if (playerGroups[group].group == p) {
+          playerGroups[group].showGroupTitle = true;
+          p++;
+        } else {
+          playerGroups[group].showGroupTitle = false;
+        }
+        arr.push(playerGroups[group]);
+      }
+      return playerGroups;
+    },
+    fixtures() {
+      var fixtures = this.tournament.fixtures;
+      var arr = [];
+      for (var fixture in fixtures) {
+        var temp = {};
+        var p = parseInt(fixture) + 1;
+        temp["Group " + p] = fixtures[fixture];
+        arr.push(temp);
+      }
+      return arr;
     }
   },
   methods: {

@@ -49,13 +49,13 @@ export default new Router({
       name: "Tournament",
       props: true,
       component: Tournament,
-      beforeEnter: AuthGuard
+     // beforeEnter: AuthGuard
     },
     {
       path: "/tournaments/:id/group",
       props: true,
-      component: Group
-      // beforeEnter: AuthGuard
+      component: Group,
+      beforeEnter: AuthGuard
     },
     {
       path: "/profile",

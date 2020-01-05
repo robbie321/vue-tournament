@@ -49,8 +49,10 @@ export default {
       var multipath = {}
       var regKey = DB.ref().push().key
       multipath["/users/" + user.id + "/registrations/" + DB.ref().push().key] = payload
-
+      //# not pushing gamertag (Two users can have the same ) pushing there uid instead for keying purpose 
+      //# Check MakeGroup()
       multipath["tournaments/" + payload + "/players/" + DB.ref().push().key] = gamertag
+      
       firebase.database().ref().update(multipath).then(res => {
         commit("setLoading", false);
         commit("registerUserForTournament", {
@@ -165,7 +167,7 @@ export default {
                 gamertag: user.user.displayName,
                 registeredTournaments: [],
                 fbKeys: {},
-                email:payload.email,
+                email: payload.email,
                 //#
                 role: 'user'
               };
@@ -173,7 +175,7 @@ export default {
               firebase.database().ref('users/' + user.user.uid).set(newUser).then((res) => {
                 commit("setUser", newUser);
                 commit("setLoading", false);
-                
+
                 console.log("gamertag: " + newUser.gamertag);
               }).catch(err => {
                 console.log('error pushing data to database after sign up :', err)
@@ -198,7 +200,7 @@ export default {
         .then(user => {
           //#fetching data on sign in from users/ node
           firebase.database().ref('users/' + user.uid).once('value', snap => {
-           
+
             // const newUser = {
             //   id: user.uid,
             //   gamertag: user.displayName,

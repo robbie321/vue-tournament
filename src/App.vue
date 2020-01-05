@@ -1,6 +1,6 @@
 <template>
   <v-app
-    v-if="!$store.getters.loading"
+    v-if="!loading"
     style="background-image: linear-gradient(to right bottom, #cee7f9, #d0e3fe, #d7deff, #e3d7ff, #f2d0f8);"
   >
     <v-navigation-drawer
@@ -77,7 +77,6 @@ export default {
           { icon: "shop", title: "create", link: "/tournament/new" },
           { icon: "home", title: "Profile", link: "/profile" }
         ];
-        console.log("hi", this.userIsAdmin);
       } else if (this.userIsAuthenticated && !this.userIsAdmin) {
         menuItems = [
           { icon: "home", title: "how it works", link: "/" },
@@ -94,7 +93,6 @@ export default {
       );
     },
     userIsAdmin() {
-      console.log("user role :", this.$store.getters.user);
       return this.$store.getters.user.role == "admin" ? true : false;
     }
   },
