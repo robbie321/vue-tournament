@@ -1,34 +1,7 @@
 <template>
   <v-container>
-    <!-- <h1>{{ groups.title }} GROUPS</h1> -->
     <div>
-      <v-card flat tile>
-        <v-window v-model="onboarding" reverse>
-          <v-window-item v-for="n in length" :key="`card-${n}`">
-            <v-card color="grey" height="200">
-              <div class="fill-height" align="center" justify="center" tag="v-card-text">
-                <h1 style="font-size: 5rem;" class="white--text">Slide {{ n }}</h1>
-              </div>
-            </v-card>
-          </v-window-item>
-        </v-window>
-
-        <v-card-actions class="justify-space-between">
-          <v-btn text @click="prev">
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-          <v-item-group v-model="onboarding" class="text-center" mandatory>
-            <v-item v-for="n in length" :key="`btn-${n}`" v-slot:default="{ active, toggle }">
-              <v-btn :input-value="active" icon @click="toggle">
-                <v-icon>mdi-record</v-icon>
-              </v-btn>
-            </v-item>
-          </v-item-group>
-          <v-btn text @click="next">
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+      <h1 style="text-align:center">{{tournament.title}}</h1>
       <div>
         <v-data-table :headers="headers" :items="players" hide-actions item-key="title">
           <template v-slot:items="props">
@@ -54,15 +27,19 @@
       <div>
         <h1 class="text-xs-center ma-5">Fixtures</h1>
         <v-layout row wrap>
-          <v-flex md4 v-for="(fixture, i) in fixtures" :key="i">
-            <v-card v-for="(item,key, ii) in fixture" :key="ii" class="ma-2">
+          <v-flex xs12 md6 v-for="(fixture, i) in fixtures" :key="i">
+            <v-card v-for="(item,key, j) in fixture" :key="j" class="ma-2">
               <h4 class="text-xs-center pa-4">{{key}}</h4>
               <hr />
-              <v-card-text v-for="(round, iii) in item" :key="iii" class="text-xs-center">
-                <span v-for="(players , iiii) in round" :key="iiii">
-                  <span v-for="(p, iiiii) in players" :key="iiiii">
-                    <span v-if="iiiii != 'player1'"  class="headline" style="color:red">&nbsp;&nbsp;VS&nbsp;&nbsp;</span>
-                    <span class="title">{{p.title}}</span>
+              <v-card-text v-for="(round, k) in item" :key="k" class="text-xs-center">
+                <span v-for="(players , x) in round" :key="x">
+                  <span v-for="(p, y) in players" :key="y">
+                    <span
+                      v-if="iiiii != 'player1'"
+                      class="headline"
+                      style="color:red"
+                    >&nbsp;VS&nbsp;</span>
+                    <span class="title">&nbsp;{{p.title}} &nbsp;</span>
                   </span>
                 </span>
               </v-card-text>
@@ -107,16 +84,6 @@ export default {
         { text: "Lost", value: "lost" },
         { text: "Points", value: "points" }
       ]
-      // groups: [
-      //   {
-      //     title: "group 1",
-      //     played: 0,
-      //     won: 0,
-      //     drawn: 0,
-      //     lost:0,
-      //     points: 0
-      //   }
-      // ],
     };
   },
   props: ["id"],

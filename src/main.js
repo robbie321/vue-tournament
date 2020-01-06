@@ -11,7 +11,7 @@ import Vuetify from "vuetify";
 import AlertCmp from "./components/Shared/Alert.vue";
 import VueSweetAlert from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css';
- 
+
 //boostrap
 // import BootstrapVue from 'bootstrap-vue'
 // import 'bootstrap/dist/css/bootstrap.css'
@@ -33,16 +33,16 @@ new Vue({
   store,
   render: h => h(App),
   created() {
-    
+
     //initialise firebase
     firebase.initializeApp({
-      apiKey: "AIzaSyCBfI6GRvngZUjL4tMly6pPlzd92RygbEI",
-      authDomain: "tournament-6a60e.firebaseapp.com",
-      databaseURL: "https://tournament-6a60e.firebaseio.com",
-      projectId: "tournament-6a60e",
-      storageBucket: "tournament-6a60e.appspot.com",
-      messagingSenderId: "781246159626",
-      appId: "1:781246159626:web:13292a59e218c6e56a78f3"
+      apiKey: "AIzaSyC3tVP-fuqR9f4xDBrPiINFxMHqq5kYup4",
+      authDomain: "tournament-website.firebaseapp.com",
+      databaseURL: "https://tournament-website.firebaseio.com/",
+      projectId: "tournament-website",
+      storageBucket: "tournament-website.appspot.com",
+      // messagingSenderId: "781246159626",
+      // appId: "1:781246159626:web:13292a59e218c6e56a78f3"
     });
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
